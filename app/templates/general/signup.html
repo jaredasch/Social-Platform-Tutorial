@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <form class="auth-form" action="{{ url_for("signup") }}" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.fname(placeholder="First Name") }}
+        {{ form.lname(placeholder="Last Name") }}
+        {{ form.email(placeholder="Email") }}
+        {{ form.username(placeholder="Username") }}
+        {{ form.nickname(placeholder="Nickname") }}
+        {{ form.password(placeholder="Password") }}
+        {{ form.confirm_password(placeholder="Confirm Password") }}
+        {{ form.submit(value="Sign Up") }}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        {% endfor %}
+    </form>
+
+{% endblock %}
