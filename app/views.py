@@ -1,13 +1,18 @@
 from app import app, models, db, lm
-from flask import render_template, redirect, session, request, url_for
-from flask_login import login_user, login_required, logout_user, current_user
+from flask import render_template, redirect, session, request, url_for, g
+from flask_login import login_user, login_required, logout_user, current_user, login_required
 from .forms import SignupForm, LoginForm
+from .models import User
+
 
 
 @lm.user_loader
 def load_user(id):
     return models.User.query.get(int(id))
 
+@app.before_request
+def before_request(): # Stores the current user in the g.user global variable
+    g.user = current_user.fname
 
 @app.route('/', methods=['GET'])
 def index():
@@ -40,6 +45,9 @@ def login():
         return redirect(request.args.get("next") or url_for("index"))
     return render_template("general/login.html", title="Log In", form=form)
 
+@app.route('/profile')
+def profile():
+    return render_template("user/profile.html", name = g.user, title = g.user + "'s Profile")
 
 @app.route('/logout', methods=['GET'])
 def logout():
