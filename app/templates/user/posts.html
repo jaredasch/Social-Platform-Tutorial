@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
     {% for post in posts %}
-    	<div><p>{{ post.author.nickname }} says: <b>{{ post.text }}</b></p></div>
+    	<div><p>{{ post.author.nickname }} says: <b>{{ post.text }}</b> at <font color = "red"> {{post.date}} </font> </p></div>
     {% endfor %}
 {% endblock %}
