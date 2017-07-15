@@ -10,10 +10,6 @@ from .models import User
 def load_user(id):
     return models.User.query.get(int(id))
 
-@app.before_request
-def before_request(): # Stores the current user in the g.user global variable
-    g.user = current_user.fname
-
 @app.route('/', methods=['GET'])
 def index():
     return render_template("base.html", title="Home", session=session)
@@ -46,10 +42,13 @@ def login():
     return render_template("general/login.html", title="Log In", form=form)
 
 @app.route('/profile')
+@login_required
 def profile():
+    g.user = current_user.fname
     return render_template("user/profile.html", name = g.user, title = g.user + "'s Profile")
 
 @app.route('/logout', methods=['GET'])
+@login_required
 def logout():
     logout_user()
     return redirect(request.args.get("next") or url_for("index"))
