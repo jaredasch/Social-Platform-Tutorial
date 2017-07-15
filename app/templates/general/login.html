@@ -3,12 +3,13 @@
     <form class="auth-form" action="{{ url_for("login") }}" method="POST">
         {{ form.hidden_tag() }}
         {{ form.email(placeholder="Email") }}
-        {{ form.password(placeholder="Password") }}
-        {{ form.submit(value="Log In") }}
-        {% for field in form %}
-            {% for error in field.errors %}
+            {% for error in form.email.errors %}
                 <p class="error">{{ error }}</p>
             {% endfor %}
-        {% endfor %}
+        {{ form.password(placeholder="Password") }}
+            {% for error in form.password.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        {{ form.submit(value="Log In") }}
     </form>
 {% endblock %}
