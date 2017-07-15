@@ -11,7 +11,7 @@ class User(db.Model):
     nickname = db.Column(db.String(64), index=False, unique=False)
     password = db.Column(db.String(128), index=False, unique=False)
     is_admin = db.Column(db.Boolean)
-    posts = db.relationship('Post', backref='author', lazy='dynamic')
+    posts = db.relationship('Posts', backref='author', lazy='dynamic')
 
     def set_password(self, password):
         self.password = bcrypt.hashpw(password.encode('UTF-8'), bcrypt.gensalt(10))
