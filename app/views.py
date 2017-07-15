@@ -47,6 +47,18 @@ def profile():
     g.user = current_user.fname
     return render_template("user/profile.html", name = g.user, title = g.user + "'s Profile")
 
+# @app.route('/createcomment', methods=['GET', 'POST'])
+# @login_required
+# def createComment():
+
+@app.route('/posts')
+@login_required
+def posts():
+    current_userID = current_user.id
+    user_posts = models.Posts.query.filter_by(userID = current_userID)
+    return render_template("user/posts.html", title = 'Posts', posts = user_posts)
+
+
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
