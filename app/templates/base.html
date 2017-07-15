@@ -32,6 +32,7 @@
                     <li><a href="{{ url_for("signup") }}">Sign Up</a></li>
                 {% else %}
                     <li><a href="{{ url_for("profile") }}"> Hi {{ current_user.fname }}</a></li>
+                    <li><a href="{{ url_for("posts") }}"> Posts </a></li>
                     <li><a href="{{ url_for("logout") }}">Logout</a></li>
                 {% endif %}
             </ul>
