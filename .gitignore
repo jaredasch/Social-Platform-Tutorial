@@ -3,3 +3,4 @@
 *.db
 .idea/
 db_repository
+.DS_Store
