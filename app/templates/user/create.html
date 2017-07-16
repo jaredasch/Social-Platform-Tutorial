@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <form action="{{ url_for("create") }}" method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.text(placeholder="Write something........", rows = '10', cols = '10') }}
+        {% for error in form.text.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+
+        {{ form.submit(value="Submit") }}
+    </form>
+{% endblock %}

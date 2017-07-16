@@ -1,8 +1,9 @@
 from app import app, models, db, lm
 from flask import render_template, flash, redirect, session, request, url_for, g
 from flask_login import login_user, login_required, logout_user, current_user, login_required
-from .forms import SignupForm, LoginForm
+from .forms import SignupForm, LoginForm, PostForm
 from .models import User
+import datetime
 
 
 
@@ -47,9 +48,19 @@ def profile():
     g.user = current_user.fname
     return render_template("user/profile.html", name = g.user, title = g.user + "'s Profile")
 
-# @app.route('/createcomment', methods=['GET', 'POST'])
-# @login_required
-# def createComment():
+@app.route('/create', methods=['GET', 'POST'])
+@login_required
+def create():
+    form = PostForm()
+    if form.validate_on_submit():
+        new_post = models.Posts(text = form.text.data, date = datetime.datetime.utcnow(), author = current_user)
+        db.session.add(new_post)
+        db.session.commit()
+        return redirect(url_for("posts"))
+    if request.method == "GET":
+        return render_template("user/create.html", title="Create A Post", form=form)
+    return render_template("user/create.html", title="Create A Post", form=form)
+
 
 @app.route('/posts')
 @login_required
