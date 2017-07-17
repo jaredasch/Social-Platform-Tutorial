@@ -2,8 +2,8 @@
 {% block content %}
     <form action="{{ url_for("create") }}" method="POST">
         {{ form.hidden_tag() }}
-        {{ form.text(placeholder="Write something........", rows = '10', cols = '10') }}
-        {% for error in form.text.errors %}
+        {{ form.body(placeholder="Write something........", rows = '10', cols = '10') }}
+        {% for error in form.body.errors %}
             <p class="error">{{ error }}</p>
         {% endfor %}
 

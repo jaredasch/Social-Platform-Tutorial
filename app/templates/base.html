@@ -31,9 +31,7 @@
                     <li><a href="{{ url_for("login") }}">Login</a></li>
                     <li><a href="{{ url_for("signup") }}">Sign Up</a></li>
                 {% else %}
-                    <li><a href="{{ url_for("profile") }}"> Hi {{ current_user.fname }}</a></li>
-                    <li><a href="{{ url_for("create") }}"> Make a Post </a></li>
-                    <li><a href="{{ url_for("posts") }}"> Posts </a></li>
+                    <li><a href="{{ url_for("profile", user=current_user.username) }}"> Hi {{ current_user.fname }}</a></li>
                     <li><a href="{{ url_for("logout") }}">Logout</a></li>
                 {% endif %}
             </ul>

@@ -11,7 +11,7 @@ class User(db.Model):
     nickname = db.Column(db.String(64), index=False, unique=False)
     password = db.Column(db.String(128), index=False, unique=False)
     is_admin = db.Column(db.Boolean)
-    posts = db.relationship('Posts', backref='author', lazy='dynamic')
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     def set_password(self, password):
         self.password = bcrypt.hashpw(password.encode('UTF-8'), bcrypt.gensalt(10))
@@ -40,12 +40,12 @@ class User(db.Model):
     def __repr__(self):
         return "<User %s>" % self.username
 
-class Posts(db.Model):
+
+class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(140))
+    body = db.Column(db.String(140))
     date = db.Column(db.DateTime)
     userID = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return '<Post %r>' % (self.text)
-

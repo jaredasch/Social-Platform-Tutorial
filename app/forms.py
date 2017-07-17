@@ -31,7 +31,8 @@ class SignupForm(Form):
     confirm_password = PasswordField("Password", validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField()
 
+
 class PostForm(Form):
-    text = TextAreaField ('Post', validators=[DataRequired()])
+    body = TextAreaField ('Post', validators=[DataRequired()])
     submit = SubmitField()
 

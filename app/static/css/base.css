@@ -161,6 +161,19 @@ section {
     color: #14355f
 }
 
+.auth-form textarea {
+    resize: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    border: none;
+}
+
+.auth-form textarea:focus {
+    outline: none;
+}
+
 form p {
     margin-top: 20px;
     text-align: center;
@@ -172,10 +185,76 @@ form p {
     color: darkred !important
 }
 
-#mainNav {
-    position: relative
+.profile-container {
+    margin: 20px auto auto auto;
+    width: 50%;
+    background-color: white;
+    padding: 20px;
 }
 
-form table tr td {
-    width: 50%
+.profile-container .profile-row div {
+    width: 50%;
+}
+
+.profile-container .profile-row {
+    margin: 10px;
+}
+
+.profile-container .profile-row .profile-value {
+    font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+.profile-pic {
+    background-size: cover !important;
+    width: 150px;
+    height: 150px;
+    margin: 30px auto;
+}
+
+.post {
+    margin: 30px auto auto auto;
+    width: 50%;
+    background-color: white;
+    padding: 20px;
+}
+
+.name {
+    color: rgba(0, 75, 150, 0.8);
+    font-size: 1.1em !important;
+}
+
+.post a {
+    font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1.1em;
+}
+
+.post .post-body {
+    padding: 10px 10px 0 10px;
+}
+
+.post-content {
+    color: #222 !important;
+    font-size: 0.9em !important;
+    font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+.post .username {
+    padding-left: 1em;
+}
+
+.icon {
+    width: 2em;
+    height: 2em;
+    background-size: cover !important;
+    display: inline-block;
+    float: left;
+    margin: 0 20px 5px 0px;
+}
+
+.post .post-date {
+    font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif !important;
+    color: #888 !important;
+    font-size: 12px;
+    margin-top: 10px;
+    margin-bottom: -5px;
 }

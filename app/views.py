@@ -1,19 +1,23 @@
 from app import app, models, db, lm
-from flask import render_template, flash, redirect, session, request, url_for, g
+from flask import render_template, flash, redirect, session, request, url_for
 from flask_login import login_user, login_required, logout_user, current_user, login_required
 from .forms import SignupForm, LoginForm, PostForm
-from .models import User
 import datetime
 
+lm.login_view = "login"
 
 
 @lm.user_loader
 def load_user(id):
     return models.User.query.get(int(id))
 
+
 @app.route('/', methods=['GET'])
+@login_required
 def index():
-    return render_template("base.html", title="Home", session=session)
+    posts = models.Post.query.order_by("date desc").all()
+    form = PostForm()
+    return render_template("user/index.html", title='Home', posts=posts, form=form)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -42,32 +46,28 @@ def login():
         return redirect(request.args.get("next") or url_for("index"))
     return render_template("general/login.html", title="Log In", form=form)
 
-@app.route('/profile')
-@login_required
-def profile():
-    g.user = current_user.fname
-    return render_template("user/profile.html", name = g.user, title = g.user + "'s Profile")
 
-@app.route('/create', methods=['GET', 'POST'])
+@app.route('/profile/<user>')
 @login_required
-def create():
+def profile(user):
+    if models.User.query.filter_by(username=user).count() == 0:
+        return redirect(url_for("index"))
+    user = models.User.query.filter_by(username=user).one()
+    posts = models.Post.query.filter_by(author=user)
+    return render_template("user/profile.html", user=user, posts=posts, title=user.fname + "'s Profile")
+
+
+@app.route('/post', methods=['POST'])
+@login_required
+def post():
     form = PostForm()
-    if form.validate_on_submit():
-        new_post = models.Posts(text = form.text.data, date = datetime.datetime.utcnow(), author = current_user)
+    if form.validate():
+        new_post = models.Post(body=form.body.data, date=datetime.datetime.utcnow(), author=current_user)
         db.session.add(new_post)
         db.session.commit()
-        return redirect(url_for("posts"))
-    if request.method == "GET":
-        return render_template("user/create.html", title="Create A Post", form=form)
-    return render_template("user/create.html", title="Create A Post", form=form)
-
-
-@app.route('/posts')
-@login_required
-def posts():
-    current_userID = current_user.id
-    user_posts = models.Posts.query.filter_by(userID = current_userID)
-    return render_template("user/posts.html", title = 'Posts', posts = user_posts)
+        return redirect(url_for("index"))
+    print form.body.errors
+    return redirect(url_for("index"))
 
 
 @app.route('/logout', methods=['GET'])
