@@ -258,3 +258,9 @@ form p {
     margin-top: 10px;
     margin-bottom: -5px;
 }
+
+.post-delete {
+    float: right;
+    margin-top: -10px;
+    font-size: 1.5em !important;
+}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <form method="POST" class = "auth-form" action="{{ url_for("post") }}">
+    <form method="POST" class="auth-form" action="{{ url_for("post") }}">
         {{ form.hidden_tag() }}
         {{ form.body(placeholder="What do you want to say?", rows = '4') }}
         {{ form.submit(value="Post") }}
@@ -9,6 +9,9 @@
         <div class="post">
             <div class="icon" style="background: url('https://s3.amazonaws.com/FringeBucket/default-user.png') 50% 50% no-repeat;"></div>
             <a href="{{ url_for("profile", user=post.author.username) }}">{{ post.author.nickname }}</a><span class="username">{{ post.author.username }}</span>
+            {% if post.author == current_user %}
+                <a class = "post-delete" href = "{{ url_for("delete_post", id=post.id) }}">&times;</a>
+            {% endif %}
             <div class="post-body">
                 <p class="post-content">{{ post.body }}</p>
             </div>

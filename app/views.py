@@ -1,7 +1,8 @@
 from app import app, models, db, lm
 from flask import render_template, flash, redirect, session, request, url_for
 from flask_login import login_user, login_required, logout_user, current_user, login_required
-from .forms import SignupForm, LoginForm, PostForm
+from flask_security import url_for_security
+from .forms import SignupForm, LoginForm, PostForm, DeletePost
 import datetime
 
 lm.login_view = "login"
@@ -16,8 +17,9 @@ def load_user(id):
 @login_required
 def index():
     posts = models.Post.query.order_by("date desc").all()
+    delete_form = DeletePost()
     form = PostForm()
-    return render_template("user/index.html", title='Home', posts=posts, form=form)
+    return render_template("user/index.html", title='Home', posts=posts, form=form, delete_form=delete_form)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -52,9 +54,10 @@ def login():
 def profile(user):
     if models.User.query.filter_by(username=user).count() == 0:
         return redirect(url_for("index"))
+    delete_form = DeletePost()
     user = models.User.query.filter_by(username=user).one()
-    posts = models.Post.query.filter_by(author=user)
-    return render_template("user/profile.html", user=user, posts=posts, title=user.fname + "'s Profile")
+    posts = models.Post.query.filter_by(author=user).order_by("date desc")
+    return render_template("user/profile.html", user=user, posts=posts, title=user.fname + "'s Profile", delete_form=delete_form)
 
 
 @app.route('/post', methods=['POST'])
@@ -75,3 +78,14 @@ def post():
 def logout():
     logout_user()
     return redirect(request.args.get("next") or url_for("index"))
+
+
+@app.route('/delete_post/<int:id>', methods=['GET'])
+@login_required
+def delete_post(id):
+    post = models.Post.query.filter_by(id=id).one()
+    if post.author == current_user:
+        db.session.delete(post)
+        db.session.commit()
+    return redirect(request.referrer)
+

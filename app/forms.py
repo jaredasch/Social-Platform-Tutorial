@@ -1,7 +1,12 @@
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, HiddenField
 from wtforms.validators import DataRequired, Email, EqualTo
 from app import models
+
+
+class DeletePost(Form):
+    post_id = HiddenField()
+    submit = SubmitField()
 
 
 class LoginForm(Form):
