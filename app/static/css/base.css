@@ -288,3 +288,27 @@ form p {
 .follow-container {
     text-align: center;
 }
+
+.user {
+    background-color: white;
+    width: 170px;
+    text-align: center;
+    padding: 20px;
+    margin: 20px 10px 20px 20px;
+    display: inline-block;
+}
+
+.user .username {
+    font-size: 0.9em;
+    color: #666;
+}
+.user .profile-pic {
+    background-size: cover !important;
+    width: 100px;
+    height: 100px;
+    margin: 10px auto 10px auto;
+}
+
+.user a {
+    display: block;
+}

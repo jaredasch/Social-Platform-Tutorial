@@ -34,6 +34,8 @@ def signup():
         new_user.set_password(form.password.data)
         db.session.add(new_user)
         db.session.commit()
+        db.session.add(new_user.follow(new_user))
+        db.session.commit()
         login_user(new_user)
         return redirect(url_for("index"))
     return render_template("general/signup.html", title="Sign Up", form=form)
@@ -58,7 +60,7 @@ def profile(user):
     delete_form = DeletePost()
     user = models.User.query.filter_by(username=user).one()
     posts = models.Post.query.filter_by(author=user).order_by("date desc")
-    return render_template("user/profile.html", user=user, posts=posts, title=user.fname + "'s Profile", delete_form=delete_form)
+    return render_template("user/profile.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), delete_form=delete_form)
 
 
 @app.route('/post', methods=['POST'])
@@ -109,5 +111,10 @@ def unfollow(username):
     db.session.add(user)
     db.session.commit()
     return redirect(url_for("profile", user=username))
+
+@app.route('/users', methods=["GET"])
+def users():
+    users = models.User.query.all()
+    return render_template("user/users.html", title="All Users", users=users)
 
 

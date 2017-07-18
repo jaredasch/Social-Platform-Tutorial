@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+
+    {% for user in users %}
+
+        <div class="user">
+            <div class="profile-pic" style="background: url('https://s3.amazonaws.com/FringeBucket/default-user.png') 50% 50% no-repeat;"></div>
+            <a href="{{ url_for("profile",user=user.username) }}">{{ user.fname }} {{ user.lname }}</a>
+            <span class="username">{{ user.username }}</span>
+        </div>
+
+    {% endfor %}
+
+{% endblock %}
