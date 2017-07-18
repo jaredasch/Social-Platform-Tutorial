@@ -14,9 +14,11 @@ def load_user(id):
 
 
 @app.route('/', methods=['GET'])
-@login_required
 def index():
-    posts = models.Post.query.order_by("date desc").all()
+    if current_user.is_authenticated:
+        posts = current_user.followed_posts()
+    else:
+        posts = models.Post.query.order_by("date desc").all()
     delete_form = DeletePost()
     form = PostForm()
     return render_template("user/index.html", title='Home', posts=posts, form=form, delete_form=delete_form)
@@ -50,7 +52,6 @@ def login():
 
 
 @app.route('/profile/<user>')
-@login_required
 def profile(user):
     if models.User.query.filter_by(username=user).count() == 0:
         return redirect(url_for("index"))
@@ -88,4 +89,25 @@ def delete_post(id):
         db.session.delete(post)
         db.session.commit()
     return redirect(request.referrer)
+
+
+@app.route('/follow/<username>', methods=["GET"])
+@login_required
+def follow(username):
+    user_to_follow = models.User.query.filter_by(username=username).one()
+    user = models.User.query.filter_by(username=current_user.username).one().follow(user_to_follow)
+    db.session.add(user)
+    db.session.commit()
+    return redirect(url_for("profile", user=username))
+
+
+@app.route('/unfollow/<username>', methods=["GET"])
+@login_required
+def unfollow(username):
+    user_to_follow = models.User.query.filter_by(username=username).one()
+    user = models.User.query.filter_by(username=current_user.username).one().unfollow(user_to_follow)
+    db.session.add(user)
+    db.session.commit()
+    return redirect(url_for("profile", user=username))
+
 

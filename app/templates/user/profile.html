@@ -26,6 +26,17 @@
             </div>
         </div>
     {% else %}
+        <div class="follow-container">
+            {% if current_user.is_following(user) %}
+                <a href="{{ url_for("unfollow", username=user.username) }}">
+                    <div class="follow-button">– Unfollow</div>
+                </a>
+            {% else %}
+                <a href="{{ url_for("follow", username=user.username) }}">
+                    <div class="follow-button">+ Follow</div>
+                </a>
+            {% endif %}
+        </div>
         <div class="profile-container">
             <div class="profile-row row">
                 <div class="profile-label col-lg-6 col-md-6 col-sm-6 col-xs-6">Username</div>
@@ -54,7 +65,7 @@
             <div class="icon" style="background: url('https://s3.amazonaws.com/FringeBucket/default-user.png') 50% 50% no-repeat;"></div>
             <a href="{{ url_for("profile", user=post.author.username) }}">{{ post.author.nickname }}</a><span class="username">{{ post.author.username }}</span>
             {% if post.author == current_user %}
-                <a class = "post-delete" href = "{{ url_for("delete_post", id=post.id) }}">&times;</a>
+                <a class="post-delete" href="{{ url_for("delete_post", id=post.id) }}">&times;</a>
             {% endif %}
             <div class="post-body">
                 <p class="post-content">{{ post.body }}</p>

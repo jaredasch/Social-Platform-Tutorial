@@ -264,3 +264,27 @@ form p {
     margin-top: -10px;
     font-size: 1.5em !important;
 }
+
+.follow-button {
+    padding: 8px;
+    margin: 10px auto 10px auto;
+    background-color: white;
+    border: 1px solid white;
+    color: #14355f;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+    font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    text-align: center;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.follow-button:hover {
+    background-color: transparent;
+    color: white;
+}
+
+.follow-container {
+    text-align: center;
+}

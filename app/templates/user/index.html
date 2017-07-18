@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <form method="POST" class="auth-form" action="{{ url_for("post") }}">
+    <form style = "margin-bottom: 0;" method="POST" class="auth-form" action="{{ url_for("post") }}">
         {{ form.hidden_tag() }}
         {{ form.body(placeholder="What do you want to say?", rows = '4') }}
         {{ form.submit(value="Post") }}
