@@ -100,7 +100,7 @@ def follow(username):
     user = models.User.query.filter_by(username=current_user.username).one().follow(user_to_follow)
     db.session.add(user)
     db.session.commit()
-    return redirect(url_for("profile", user=username))
+    return redirect(request.referrer)
 
 
 @app.route('/unfollow/<username>', methods=["GET"])
@@ -110,11 +110,10 @@ def unfollow(username):
     user = models.User.query.filter_by(username=current_user.username).one().unfollow(user_to_follow)
     db.session.add(user)
     db.session.commit()
-    return redirect(url_for("profile", user=username))
+    return redirect(request.referrer)
+
 
 @app.route('/users', methods=["GET"])
 def users():
     users = models.User.query.all()
     return render_template("user/users.html", title="All Users", users=users)
-
-

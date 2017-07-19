@@ -7,6 +7,15 @@
             <div class="profile-pic" style="background: url('https://s3.amazonaws.com/FringeBucket/default-user.png') 50% 50% no-repeat;"></div>
             <a href="{{ url_for("profile",user=user.username) }}">{{ user.fname }} {{ user.lname }}</a>
             <span class="username">{{ user.username }}</span>
+            {% if current_user.is_following(user) %}
+                <a href="{{ url_for("unfollow", username=user.username) }}">
+                    <div class="follow-button">– Unfollow</div>
+                </a>
+            {% else %}
+                <a href="{{ url_for("follow", username=user.username) }}">
+                    <div class="follow-button">+ Follow</div>
+                </a>
+            {% endif %}
         </div>
 
     {% endfor %}

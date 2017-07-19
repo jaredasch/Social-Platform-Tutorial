@@ -14,5 +14,7 @@ SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
 SECURITY_RECOVERABLE = True
 
+MAX_SEARCH_RESULTS = 10
+
 WTF_CSRF_ENABLED = True
 SECRET_KEY = 'webdev-blog'

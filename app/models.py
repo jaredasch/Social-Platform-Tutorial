@@ -1,5 +1,13 @@
-from app import db
+from app import app, db
 from flask_bcrypt import bcrypt
+
+import sys
+
+if sys.version_info >= (3, 0):
+    enable_search = False
+else:
+    enable_search = True
+    import flask_whooshalchemy as whooshalchemy
 
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
@@ -8,6 +16,7 @@ followers = db.Table('followers',
 
 
 class User(db.Model):
+    __searchable__ = ['fname', 'lname', 'email', 'username', 'nickname']
     id = db.Column(db.Integer, primary_key=True)
     fname = db.Column(db.String(64), index=True, unique=False)
     lname = db.Column(db.String(64), index=True, unique=False)
@@ -76,3 +85,7 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post %r>' % (self.text)
+
+
+if enable_search:
+    whooshalchemy.whoosh_index(app, User)
