@@ -3,6 +3,7 @@ from flask import render_template, flash, redirect, session, request, url_for
 from flask_login import login_user, login_required, logout_user, current_user, login_required
 from flask_security import url_for_security
 from .forms import SignupForm, LoginForm, PostForm, DeletePost
+from config import ADMINS
 import datetime
 
 lm.login_view = "login"
@@ -32,6 +33,8 @@ def signup():
     if form.validate_on_submit():
         new_user = models.User(fname=form.fname.data, lname=form.lname.data, email=form.email.data, nickname=form.nickname.data, username=form.username.data)
         new_user.set_password(form.password.data)
+        if form.email.data in ADMINS:
+            new_user.is_admin = True
         db.session.add(new_user)
         db.session.commit()
         db.session.add(new_user.follow(new_user))
@@ -117,3 +120,14 @@ def unfollow(username):
 def users():
     users = models.User.query.all()
     return render_template("user/users.html", title="All Users", users=users)
+
+@app.route('/admincontrols/')
+@login_required
+def admincontrols():
+    if current_user.is_admin == None:
+        return redirect(url_for("index"))
+    else:   
+        return render_template('admin/admincontrols.html', admin = current_user, postCount = models.Post.query.count(), userCount = models.User.query.count() )
+
+
+

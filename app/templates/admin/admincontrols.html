@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+	<p> Hi {{admin.nickname}}. Below you will find the Admin Controls </p>
+	<h1> Statistics </h1>
+		<h2> Number of Posts </h2>
+			<p> {{postCount}} posts</p>
+		<h2> Number of Users </h2>
+			<p> {{userCount}} users</p>
+{% endblock %}

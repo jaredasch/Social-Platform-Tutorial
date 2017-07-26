@@ -32,6 +32,9 @@
                     <li><a href="{{ url_for("signup") }}">Sign Up</a></li>
                 {% else %}
                     <li><input id="search-bar" type="text" placeholder="Search"></li>
+                    {% if current_user.is_admin %}
+                        <li><a href="{{ url_for("admincontrols", user=current_user.username) }}">Admin Controls</a></li>
+                    {% endif %}
                     <li><a href="{{ url_for("profile", user=current_user.username) }}">Profile</a></li>
                     <li><a href="{{ url_for("logout") }}">Logout</a></li>
                 {% endif %}
