@@ -318,6 +318,10 @@ form p {
     border-color: #14355f;
 }
 
+.user a .follow-button:hover {
+    background-color: #14355f;
+}
+
 #search-bar {
     border-color: #ccc;
     width: 300px;

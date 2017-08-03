@@ -16,8 +16,9 @@ followers = db.Table('followers',
 
 
 class User(db.Model):
-    __searchable__ = ['fname', 'lname', 'email', 'username', 'nickname']
+    __searchable__ = ['name', 'fname', 'lname', 'email', 'username', 'nickname']
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=False) # For searching
     fname = db.Column(db.String(64), index=True, unique=False)
     lname = db.Column(db.String(64), index=True, unique=False)
     email = db.Column(db.String(64), index=True, unique=True)
@@ -86,6 +87,4 @@ class Post(db.Model):
     def __repr__(self):
         return '<Post %r>' % (self.text)
 
-
-if enable_search:
-    whooshalchemy.whoosh_index(app, User)
+whooshalchemy.whoosh_index(app, User)

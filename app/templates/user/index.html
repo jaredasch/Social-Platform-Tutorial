@@ -11,7 +11,7 @@
         <div class="post">
             <div class="icon" style="background: url('https://s3.amazonaws.com/FringeBucket/default-user.png') 50% 50% no-repeat;"></div>
             <a href="{{ url_for("profile", user=post.author.username) }}">{{ post.author.nickname }}</a><span class="username">{{ post.author.username }}</span>
-            {% if post.author == current_user %}
+            {% if post.author == current_user or current_user.is_admin %}
                 <a class="post-delete" href="{{ url_for("delete_post", id=post.id) }}">&times;</a>
             {% endif %}
             <div class="post-body">

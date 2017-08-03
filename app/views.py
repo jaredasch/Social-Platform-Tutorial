@@ -31,7 +31,7 @@ def signup():
     if request.method == "GET":
         return render_template("general/signup.html", title="Sign Up", form=form)
     if form.validate_on_submit():
-        new_user = models.User(fname=form.fname.data, lname=form.lname.data, email=form.email.data, nickname=form.nickname.data, username=form.username.data)
+        new_user = models.User(name=form.fname.data + ' ' + form.lname.data, fname=form.fname.data, lname=form.lname.data, email=form.email.data, nickname=form.nickname.data, username=form.username.data)
         new_user.set_password(form.password.data)
         if form.email.data in ADMINS:
             new_user.is_admin = True
@@ -90,7 +90,7 @@ def logout():
 @login_required
 def delete_post(id):
     post = models.Post.query.filter_by(id=id).one()
-    if post.author == current_user:
+    if post.author == current_user or current_user.is_admin:
         db.session.delete(post)
         db.session.commit()
     return redirect(request.referrer)
@@ -121,13 +121,25 @@ def users():
     users = models.User.query.all()
     return render_template("user/users.html", title="All Users", users=users)
 
-@app.route('/admincontrols/')
+
+@app.route('/users/search', methods=["GET"])
+def user_search():
+    tag = request.args.get('tag')
+    print tag
+    results = models.User.query.whoosh_search(tag).all()
+    print results
+    if len(results) == 1:
+        user = results[0]
+        return redirect(url_for('profile', user=user.username))
+    elif len(results) == 0:
+        return redirect(url_for('index'))
+    return render_template('user/users.html', title="Results for %s" % tag, users=results)
+
+
+@app.route('/admin/')
 @login_required
 def admincontrols():
     if current_user.is_admin == None:
         return redirect(url_for("index"))
-    else:   
-        return render_template('admin/admincontrols.html', admin = current_user, postCount = models.Post.query.count(), userCount = models.User.query.count() )
-
-
-
+    else:
+        return render_template('admin/admin_panel.html', admin=current_user, postCount=models.Post.query.count(), userCount=models.User.query.count())
