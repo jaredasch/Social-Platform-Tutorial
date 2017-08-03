@@ -59,7 +59,7 @@ def login():
 @app.route('/profile/<user>')
 def profile(user):
     if models.User.query.filter_by(username=user).count() == 0:
-        return redirect(url_for("index"))
+        return render_template('user/user_not_found.html')
     delete_form = DeletePost()
     user = models.User.query.filter_by(username=user).one()
     posts = models.Post.query.filter_by(author=user).order_by("date desc")
@@ -132,7 +132,7 @@ def user_search():
         user = results[0]
         return redirect(url_for('profile', user=user.username))
     elif len(results) == 0:
-        return redirect(url_for('index'))
+        return render_template('user/user_not_found.html')
     return render_template('user/users.html', title="Results for %s" % tag, users=results)
 
 
