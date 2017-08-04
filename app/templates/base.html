@@ -37,7 +37,7 @@
                     </li>
                     <li><a href="{{ url_for("users") }}">People</a></li>
                     {% if current_user.is_admin %}
-                        <li><a href="{{ url_for("admin_controls", user=current_user.username) }}">Admin Panel</a></li>
+                        <li><a href="{{ url_for("admin_controls") }}">Admin Panel</a></li>
                     {% endif %}
                     <li><a href="{{ url_for("profile", user=current_user.username) }}">Profile</a></li>
                     <li><a href="{{ url_for("logout") }}">Logout</a></li>

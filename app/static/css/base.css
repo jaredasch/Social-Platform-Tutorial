@@ -396,3 +396,30 @@ form p {
     background-color: #fff;
     color: #14355f
 }
+
+.admin-container {
+    margin: 50px auto;
+    width: 50%;
+    background-color: #fff;
+    padding: 20px
+}
+
+.admin-container .admin-row div {
+    width: 50%;
+}
+
+.admin-container .admin-row {
+    margin: 10px;
+}
+
+.admin-container .admin-row .admin-value {
+    font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+.admin-container h2 {
+    text-align: center;
+}
+
+.admin-container .statistics {
+    margin: 20px auto auto auto;
+}

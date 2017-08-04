@@ -25,9 +25,9 @@
             <div class="post-edit-div">
                 <form class="update-form" action="{{ url_for("edit_post", id = post.id) }}" method="POST">
                     {{ form.hidden_tag() }}
-                    {{ form.body(id="update-textarea") }}
+                    {{ form.body(class="update-textarea") }}
                     <script type="text/javascript">
-                        document.getElementById('update-textarea').innerHTML = "{{ post.body }}"
+                        $('.update-textarea').last().html("{{ post.body }}");
                     </script>
                     <p class="post-date">{{ post.date.strftime('%I:%M %p %B %d, %Y') }}</p>
                     {{ form.submit(value="Update Post") }}

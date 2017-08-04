@@ -145,10 +145,11 @@ def user_search():
 @app.route('/admin/')
 @login_required
 def admin_controls():
+    form = PostForm()
     if not current_user.is_admin:
         return redirect(url_for("index"))
     else:
-        return render_template('admin/admin_panel.html', admin=current_user, postCount=models.Post.query.count(), userCount=models.User.query.count())
+        return render_template('admin/admin_panel.html', title="Admin Panel",form=form, postCount=models.Post.query.count(), userCount=models.User.query.count(), posts = models.Post.query.order_by("date desc").all())
 
 
 @app.route('/edit_post/<int:id>', methods=["POST"])
