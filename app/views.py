@@ -2,7 +2,7 @@ from app import app, models, db, lm
 from flask import render_template, flash, redirect, session, request, url_for
 from flask_login import login_user, login_required, logout_user, current_user, login_required
 from flask_security import url_for_security
-from .forms import SignupForm, LoginForm, PostForm, DeletePost
+from .forms import SignupForm, LoginForm, PostForm, UpdatePasswordForm
 from config import ADMINS
 import datetime
 
@@ -20,9 +20,8 @@ def index():
         posts = current_user.followed_posts()
     else:
         posts = models.Post.query.order_by("date desc").all()
-    delete_form = DeletePost()
     form = PostForm()
-    return render_template("user/index.html", title='Home', posts=posts, form=form, delete_form=delete_form)
+    return render_template("user/index.html", title='Home', posts=posts, form=form)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -49,10 +48,16 @@ def login():
     form = LoginForm()
     if request.method == "GET":
         return render_template("general/login.html", title="Log In", form=form)
-    if form.validate():
-        user = models.User.query.filter_by(email=form.email.data).one()
-        login_user(user)
-        return redirect(request.args.get("next") or url_for("index"))
+    if form.validate_on_submit():
+        if models.User.query.filter_by(email=form.email.data).count() == 0:
+            flash("Email or Password is incorrect")
+        else:
+            user = models.User.query.filter_by(email=form.email.data).one()
+            if user.check_password(form.password.data):
+                login_user(user)
+                return redirect(request.args.get("next") or url_for("index"))
+            else:
+                flash("Email or Password is incorrect")
     return render_template("general/login.html", title="Log In", form=form)
 
 
@@ -61,9 +66,10 @@ def profile(user):
     if models.User.query.filter_by(username=user).count() == 0:
         return render_template('user/user_not_found.html')
     edit_form = PostForm()
+    change_password_form = UpdatePasswordForm()
     user = models.User.query.filter_by(username=user).one()
     posts = models.Post.query.filter_by(author=user).order_by("date desc")
-    return render_template("user/profile.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), edit_form=edit_form)
+    return render_template("user/profile.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), edit_form=edit_form, password_form = change_password_form)
 
 
 @app.route('/post', methods=['POST'])
@@ -138,7 +144,7 @@ def user_search():
 
 @app.route('/admin/')
 @login_required
-def admincontrols():
+def admin_controls():
     if not current_user.is_admin:
         return redirect(url_for("index"))
     else:
@@ -146,6 +152,7 @@ def admincontrols():
 
 
 @app.route('/edit_post/<int:id>', methods=["POST"])
+@login_required
 def edit_post(id):
     form = PostForm()
     post = models.Post.query.filter_by(id=id).one()
@@ -156,5 +163,16 @@ def edit_post(id):
     return redirect(request.referrer)
 
 
-
-
+@app.route('/update_password/', methods=['POST'])
+def update_password():
+    form = UpdatePasswordForm()
+    if form.validate_on_submit():
+        current_user.set_password(form.new_password.data)
+        db.session.add(current_user)
+        db.session.commit()
+        return redirect(request.referrer)
+    errors = []
+    for field in form:
+        errors += field.errors
+    flash(errors)
+    return redirect(request.referrer)

@@ -4,26 +4,10 @@ from wtforms.validators import DataRequired, Email, EqualTo
 from app import models
 
 
-class DeletePost(Form):
-    post_id = HiddenField()
-    submit = SubmitField()
-
-
 class LoginForm(Form):
     email = StringField("Email", validators=[DataRequired()])
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField()
-
-    def validate_on_submit(self):
-        if Form.validate(self):
-            return False
-        if models.User.query.filter_by(email=self.email.data).count() == 0:
-            self.email.errors.append("User is not registered")
-            return False
-        if not models.User.query.filter_by(email=self.email.data).one().check_password(self.password.data):
-            self.password.errors.append("Email or password is incorrect")
-            return False
-        return True
 
 
 class SignupForm(Form):
@@ -38,6 +22,11 @@ class SignupForm(Form):
 
 
 class PostForm(Form):
-    body = TextAreaField ('Post', validators=[DataRequired()])
+    body = TextAreaField('Post', validators=[DataRequired()])
     submit = SubmitField()
 
+
+class UpdatePasswordForm(Form):
+    new_password = PasswordField("Password", validators=[DataRequired()])
+    confirm_password = PasswordField("Password", validators=[DataRequired(), EqualTo('new_password', message="Passwords don't Match")])
+    submit = SubmitField()

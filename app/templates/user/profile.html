@@ -25,6 +25,17 @@
                 <div class="profile-value col-lg-6 col-md-6 col-sm-6 col-xs-6profile-value">{{ user.nickname }}</div>
             </div>
         </div>
+        <form class="auth-form" method="POST" action="{{ url_for("update_password") }}">
+            {{ password_form.hidden_tag() }}
+            {{ password_form.new_password(placeholder="Enter New Password") }}
+            {{ password_form.confirm_password(placeholder="Confirm New Password") }}
+            {{ password_form.submit() }}
+            {% with errors = get_flashed_messages() %}
+                {% for error in errors %}
+                    <p class="error">{{ error[0] }}</p>
+                {% endfor %}
+            {% endwith %}
+        </form>
     {% else %}
         <div class="follow-container">
             {% if current_user.is_following(user) %}
@@ -79,9 +90,6 @@
                 <form class="update-form" action="{{ url_for("edit_post", id = post.id) }}" method="POST">
                     {{ edit_form.hidden_tag() }}
                     {{ edit_form.body(id="update-textarea") }}
-                    <script type="text/javascript">
-                        document.getElementById('update-textarea').innerHTML = "{{ post.body }}"
-                    </script>
                     <p class="post-date">{{ post.date.strftime('%I:%M %p %B %d, %Y') }}</p>
                     {{ edit_form.submit(value="Update Post") }}
                 </form>
@@ -93,6 +101,7 @@
         $('.post-edit').on("click", function (e) {
             e.preventDefault();
             $(this).parent().children('.post-edit-div').toggle();
+            document.getElementById('update-textarea').innerHTML = $(this).parent().children('.post-no-edit-div').children(".post-body").children('p').html()
             $(this).parent().children('.post-no-edit-div').toggle();
         });
     </script>
