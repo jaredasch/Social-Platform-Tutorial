@@ -60,10 +60,10 @@ def login():
 def profile(user):
     if models.User.query.filter_by(username=user).count() == 0:
         return render_template('user/user_not_found.html')
-    delete_form = DeletePost()
+    edit_form = PostForm()
     user = models.User.query.filter_by(username=user).one()
     posts = models.Post.query.filter_by(author=user).order_by("date desc")
-    return render_template("user/profile.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), delete_form=delete_form)
+    return render_template("user/profile.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), edit_form=edit_form)
 
 
 @app.route('/post', methods=['POST'])
