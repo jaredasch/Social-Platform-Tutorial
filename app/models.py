@@ -1,5 +1,7 @@
 from app import app, db
+from flask import render_template
 from flask_bcrypt import bcrypt
+from .emails import send_email
 
 import sys
 
@@ -18,7 +20,7 @@ followers = db.Table('followers',
 class User(db.Model):
     __searchable__ = ['name', 'fname', 'lname', 'email', 'username', 'nickname']
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=False) # For searching
+    name = db.Column(db.String(64), index=True, unique=False)  # For searching
     fname = db.Column(db.String(64), index=True, unique=False)
     lname = db.Column(db.String(64), index=True, unique=False)
     email = db.Column(db.String(64), index=True, unique=True)
@@ -42,7 +44,10 @@ class User(db.Model):
 
     def follow(self, user):
         if not self.is_following(user):
+            send_email("%s is now following you!" % user.name, "Website Name", [user.email], "WebDevBlog@gmail.com", render_template("email/followed_by.html", user_following=user))
+            send_email("You are now following %s" % user.name, "Website Name", [self.email], "WebDevBlog@gmail.com", render_template("email/following.html", user_following=user))
             self.followed.append(user)
+            print self.email, user.email
             return self
 
     def unfollow(self, user):
@@ -86,5 +91,6 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post %r>' % (self.text)
+
 
 whooshalchemy.whoosh_index(app, User)
