@@ -2,7 +2,8 @@
 {% block content %}
     <div class="admin-container">
         <h2>Admin Panel</h2>
-        <div class = "statistics">
+        <a href = "{{ url_for("get_users_csv") }}">Download User CSV</a>
+        <div class="statistics">
             <div class="admin-row row">
                 <div class="admin-label col-lg-6 col-md-6 col-sm-6 col-xs-6">Number of Posts</div>
                 <div class="admin-value col-lg-6 col-md-6 col-sm-6 col-xs-6">{{ postCount }} posts</div>
@@ -11,7 +12,7 @@
                 <div class="admin-label col-lg-6 col-md-6 col-sm-6 col-xs-6">Number of Users</div>
                 <div class="admin-value col-lg-6 col-md-6 col-sm-6 col-xs-6">{{ userCount }} users</div>
             </div>
-            </div>
+        </div>
     </div>
     {% for post in posts %}
         <div class="post">

@@ -1,10 +1,12 @@
 from app import app, models, db, lm
-from flask import render_template, flash, redirect, session, request, url_for
+from flask import render_template, flash, redirect, session, request, url_for, send_file
 from flask_login import login_user, login_required, logout_user, current_user, login_required
 from flask_security import url_for_security
 from .forms import SignupForm, LoginForm, PostForm, UpdatePasswordForm
 from config import ADMINS
+from .emails import send_email
 import datetime
+import csv
 
 lm.login_view = "login"
 
@@ -34,11 +36,14 @@ def signup():
         new_user.set_password(form.password.data)
         if form.email.data in ADMINS:
             new_user.is_admin = True
+        else:
+            new_user.is_admin = False
         db.session.add(new_user)
         db.session.commit()
         db.session.add(new_user.follow(new_user))
         db.session.commit()
         login_user(new_user)
+        send_email("Your account was created successfully", "Website Name", [form.email.data], "WebDevBlog@gmail.com", render_template("email/account_created.html"))
         return redirect(url_for("index"))
     return render_template("general/signup.html", title="Sign Up", form=form)
 
@@ -177,3 +182,23 @@ def update_password():
         errors += field.errors
     flash(errors)
     return redirect(request.referrer)
+
+
+@app.route('/users/csv', methods=['GET'])
+@login_required
+def get_users_csv():
+    if current_user.is_admin:
+        users = [models.User.query.first().__dict__.keys()]
+        for u in models.User.query.all():
+            user_temp = []
+            for key, value in u.__dict__.items():
+                user_temp += [value]
+            users += [user_temp]
+        with open("app/data/users.csv", "wb") as f:
+            writer = csv.writer(f)
+            writer.writerows(users)
+        return send_file('data/users.csv',
+                         mimetype='text/csv',
+                         attachment_filename='data/users.csv',
+                         as_attachment=True)
+    return redirect(url_for("index"))

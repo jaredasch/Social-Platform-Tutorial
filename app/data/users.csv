@@ -1,0 +1,4 @@
+username,_sa_instance_state,name,id,lname,is_admin,fname,password,nickname,email
+jasch,<sqlalchemy.orm.state.InstanceState object at 0x104bbb5d0>,Jared Asch,1,Asch,True,Jared,$2b$10$jpkI4VcnjhzIMO7pErrfPuESlioPDtq3BpvL.5nKfj5gY.lwZBF0W,Jared A,jasch@stuy.edu
+jaredasch1,<sqlalchemy.orm.state.InstanceState object at 0x104bbb410>,Jared Asch,2,Asch,False,Jared,$2b$10$PSzPKzCVkPML2m7BTrnWmOYD/e97wsIL/zI6lkbl13bujhYLJldTq,J A,jaredasch1@gmail.com
+tempitytemp,<sqlalchemy.orm.state.InstanceState object at 0x104bbb390>,Temp Tester,3,Tester,False,Temp,$2b$10$xLgTV0eUDLIJcHqz82bfh..zHyij3fv7Bfc8hu9m21WoY96USet7G,Temp,j2333559@mvrht.net

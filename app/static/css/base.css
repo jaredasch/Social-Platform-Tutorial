@@ -423,3 +423,8 @@ form p {
 .admin-container .statistics {
     margin: 20px auto auto auto;
 }
+
+.admin-container a {
+    text-align: center;
+    display: block;
+}
