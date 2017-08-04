@@ -216,6 +216,7 @@ form p {
     width: 50%;
     background-color: white;
     padding: 20px;
+    display: table;
 }
 
 .name {
@@ -265,6 +266,25 @@ form p {
     font-size: 1.5em !important;
 }
 
+.post-delete:hover {
+    color: #14355f !important;
+}
+
+.post-edit i {
+    float: right;
+    margin: -3px 10px auto 5px;
+    font-size: 1.0em !important;
+    padding-left: 3px;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+}
+
+.post-edit i:hover {
+    border-bottom: 2px solid #14355f;
+    color: #14355f;
+    cursor: pointer;
+}
+
 .follow-button {
     padding: 8px;
     margin: 10px auto 10px auto;
@@ -302,6 +322,7 @@ form p {
     font-size: 0.9em;
     color: #666;
 }
+
 .user .profile-pic {
     background-size: cover !important;
     width: 100px;
@@ -314,7 +335,7 @@ form p {
 }
 
 .user a .follow-button {
-    background-color:white;
+    background-color: white;
     border-color: #14355f;
 }
 
@@ -337,4 +358,41 @@ form p {
 #search-bar:focus {
     outline: none;
     border-color: #888;
+}
+
+.update-form p {
+    text-align: left;
+    display: inline;
+}
+
+.update-form textarea {
+    resize: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    border: none;
+    font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.update-form textarea:focus {
+    outline: none;
+}
+
+.update-form input[type="submit"] {
+    padding: 8px;
+    margin: -5px auto 0px auto;
+    background-color: #14355f;
+    border: 1px solid #14355f;
+    color: #fff;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+    font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    float: right;
+}
+
+.update-form input[type="submit"]:hover {
+    background-color: #fff;
+    color: #14355f
 }

@@ -139,7 +139,22 @@ def user_search():
 @app.route('/admin/')
 @login_required
 def admincontrols():
-    if current_user.is_admin == None:
+    if not current_user.is_admin:
         return redirect(url_for("index"))
     else:
         return render_template('admin/admin_panel.html', admin=current_user, postCount=models.Post.query.count(), userCount=models.User.query.count())
+
+
+@app.route('/edit_post/<int:id>', methods=["POST"])
+def edit_post(id):
+    form = PostForm()
+    post = models.Post.query.filter_by(id=id).one()
+    if post.author == current_user or current_user.is_admin:
+        post.body = form.body.data
+        db.session.add(post)
+        db.session.commit()
+    return redirect(request.referrer)
+
+
+
+
