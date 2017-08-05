@@ -416,6 +416,10 @@ form p {
     font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif !important;
 }
 
+.admin-container .admin-row .admin-value a {
+    text-align: left !important;
+}
+
 .admin-container h2 {
     text-align: center;
 }
@@ -427,4 +431,22 @@ form p {
 .admin-container a {
     text-align: center;
     display: block;
+}
+
+.delete-account {
+    color: darkred;
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    margin: 20px auto auto auto;
+}
+
+.admin-remove, .admin-add {
+    display: block;
+    text-align: center;
+}
+
+.profile-container .error {
+    text-align: center;
+    font-size: 13px;
 }

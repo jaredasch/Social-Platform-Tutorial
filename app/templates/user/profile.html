@@ -2,8 +2,18 @@
 {% block content %}
 
     <div class="profile-pic" style="background: url('https://s3.amazonaws.com/FringeBucket/default-user.png') 50% 50% no-repeat;"></div>
-    {% if current_user.username == user.username %}
+    {% if current_user == user or current_user.is_admin %}
         <div class="profile-container">
+            {% if current_user.is_admin and user != current_user %}
+                {% if user.is_admin %}
+                    <a class="admin-remove" href="{{ url_for("remove_admin", id=user.id) }}">Remove {{ user.name }} as an Admin</a>
+                {% else %}
+                    <a class="admin-add" href="{{ url_for("add_admin", id=user.id) }}">Make {{ user.name }} an Admin</a>
+                {% endif %}
+            {% endif %}
+            {% with error = get_flashed_messages(category_filter=["admin-error"])[0] %}
+                <p class="error">{{ error }}</p>
+            {% endwith %}
             <div class="profile-row row">
                 <div class="profile-label col-lg-6 col-md-6 col-sm-6 col-xs-6">Username</div>
                 <div class="profile-value col-lg-6 col-md-6 col-sm-6 col-xs-6">{{ user.username }}</div>
@@ -24,6 +34,10 @@
                 <div class="profile-label col-lg-6 col-md-6 col-sm-6 col-xs-6">Nickname</div>
                 <div class="profile-value col-lg-6 col-md-6 col-sm-6 col-xs-6profile-value">{{ user.nickname }}</div>
             </div>
+            <a class="delete-account" href="{{ url_for("delete_user", id=user.id) }}">Delete Account</a>
+            {% with error = get_flashed_messages(category_filter=["delete-error"])[0] %}
+                <p class="error">{{ error }}</p>
+            {% endwith %}
         </div>
         <form class="auth-form" method="POST" action="{{ url_for("update_password") }}">
             {{ password_form.hidden_tag() }}

@@ -26,6 +26,13 @@ def index():
     return render_template("user/index.html", title='Home', posts=posts, form=form)
 
 
+@app.route('/posts/all', methods=["GET"])
+def all_posts():
+    posts = models.Post.query.order_by("date desc").all()
+    form = PostForm()
+    return render_template("user/index.html", title='Home', posts=posts, form=form)
+
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignupForm()
@@ -40,7 +47,8 @@ def signup():
             new_user.is_admin = False
         db.session.add(new_user)
         db.session.commit()
-        db.session.add(new_user.follow(new_user))
+        new_user.follow(new_user)
+        db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
         send_email("Your account was created successfully", "Website Name", [form.email.data], "WebDevBlog@gmail.com", render_template("email/account_created.html"))
@@ -74,7 +82,7 @@ def profile(user):
     change_password_form = UpdatePasswordForm()
     user = models.User.query.filter_by(username=user).one()
     posts = models.Post.query.filter_by(author=user).order_by("date desc")
-    return render_template("user/profile.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), edit_form=edit_form, password_form = change_password_form)
+    return render_template("user/profile.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), edit_form=edit_form, password_form=change_password_form)
 
 
 @app.route('/post', methods=['POST'])
@@ -129,7 +137,7 @@ def unfollow(username):
 
 @app.route('/users', methods=["GET"])
 def users():
-    users = models.User.query.all()
+    users = [current_user] + models.User.query.filter(models.User.id != current_user.id).all()
     return render_template("user/users.html", title="All Users", users=users)
 
 
@@ -154,7 +162,7 @@ def admin_controls():
     if not current_user.is_admin:
         return redirect(url_for("index"))
     else:
-        return render_template('admin/admin_panel.html', title="Admin Panel",form=form, postCount=models.Post.query.count(), userCount=models.User.query.count(), posts = models.Post.query.order_by("date desc").all())
+        return render_template('admin/admin_panel.html', title="Admin Panel", form=form, postCount=models.Post.query.count(), userCount=models.User.query.count(), posts=models.Post.query.order_by("date desc").all())
 
 
 @app.route('/edit_post/<int:id>', methods=["POST"])
@@ -202,3 +210,43 @@ def get_users_csv():
                          attachment_filename='data/users.csv',
                          as_attachment=True)
     return redirect(url_for("index"))
+
+
+@app.route('/delete_user/<int:id>', methods=["GET"])
+@login_required
+def delete_user(id):
+    if id == current_user.id or current_user.is_admin:
+        query = models.User.query.filter_by(id=id)
+        if query.one().is_admin and id != current_user.id:
+            flash("You cannot delete the account of an admin without demoting them first", "delete-error")
+            return redirect(request.referrer)
+        else:
+            models.Post.query.filter_by(author=query.one()).delete()
+            query.delete()
+            db.session.commit()
+    return redirect(url_for("index"))
+
+
+@app.route('/add_admin/<int:id>', methods=["GET"])
+@login_required
+def add_admin(id):
+    if current_user.is_admin:
+        u = models.User.query.filter_by(id=id).one()
+        u.is_admin = True
+        db.session.add(u)
+        db.session.commit()
+    return redirect(request.referrer)
+
+
+@app.route('/remove_admin/<int:id>', methods=["GET"])
+@login_required
+def remove_admin(id):
+    if current_user.is_admin:
+        u = models.User.query.filter_by(id=id).one()
+        if u.email not in ADMINS:
+            u.is_admin = False
+            db.session.add(u)
+            db.session.commit()
+        else:
+            flash("You Can't Remove this Admin", "admin-error")
+    return redirect(request.referrer)
