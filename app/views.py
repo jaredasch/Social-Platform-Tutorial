@@ -82,7 +82,7 @@ def login():
 def forgot_password():
     form = ForgotForm()
     if form.validate_on_submit():
-        send_email("Your account was created successfully", "Website Name", [form.email.data], "WebDevBlog@gmail.com", render_template("email/account_created.html"))
+        send_email("Password Change Requested", "Website Name", [form.email.data], "WebDevBlog@gmail.com", render_template("email/password_change.html", link = "https://www.yahoo.com" ))
         return redirect(request.args.get("next") or url_for("index"))
     return render_template("general/forgot_password.html", title="Forgot Password", form=form)
 
