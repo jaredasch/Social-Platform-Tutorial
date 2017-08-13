@@ -39,20 +39,25 @@ def signup():
     if request.method == "GET":
         return render_template("general/signup.html", title="Sign Up", form=form)
     if form.validate_on_submit():
-        new_user = models.User(name=form.fname.data + ' ' + form.lname.data, fname=form.fname.data, lname=form.lname.data, email=form.email.data, nickname=form.nickname.data, username=form.username.data)
-        new_user.set_password(form.password.data)
-        if form.email.data in ADMINS:
-            new_user.is_admin = True
+        if models.User.query.filter_by(email=form.email.data).count() > 0:
+            flash("Email is already in use")
+        elif models.User.query.filter_by(username=form.username.data).count() > 0:
+            flash("Username is already in use")
         else:
-            new_user.is_admin = False
-        db.session.add(new_user)
-        db.session.commit()
-        new_user.follow(new_user)
-        db.session.add(new_user)
-        db.session.commit()
-        login_user(new_user)
-        send_email("Your account was created successfully", "Website Name", [form.email.data], "WebDevBlog@gmail.com", render_template("email/account_created.html"))
-        return redirect(url_for("index"))
+            new_user = models.User(name=form.fname.data + ' ' + form.lname.data, fname=form.fname.data, lname=form.lname.data, email=form.email.data, nickname=form.nickname.data, username=form.username.data)
+            new_user.set_password(form.password.data)
+            if form.email.data in ADMINS:
+               new_user.is_admin = True
+            else:
+                new_user.is_admin = False
+            db.session.add(new_user)
+            db.session.commit()
+            new_user.follow(new_user)
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user)
+            send_email("Your account was created successfully", "Website Name", [form.email.data], "WebDevBlog@gmail.com", render_template("email/account_created.html"))
+            return redirect(url_for("index"))
     return render_template("general/signup.html", title="Sign Up", form=form)
 
 
