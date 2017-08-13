@@ -90,7 +90,7 @@ def profile(user):
 def post():
     form = PostForm()
     if form.validate():
-        new_post = models.Post(body=form.body.data, date=datetime.datetime.utcnow(), author=current_user)
+        new_post = models.Post(body=form.body.data.strip(), date=datetime.datetime.utcnow(), author=current_user)
         db.session.add(new_post)
         db.session.commit()
         return redirect(url_for("index"))
@@ -162,7 +162,8 @@ def admin_controls():
     if not current_user.is_admin:
         return redirect(url_for("index"))
     else:
-        return render_template('admin/admin_panel.html', title="Admin Panel", form=form, postCount=models.Post.query.count(), userCount=models.User.query.count(), posts=models.Post.query.order_by("date desc").all())
+        posts = models.Post.query.order_by("date desc").all()
+        return render_template('admin/admin_panel.html', title="Admin Panel", form=form, postCount=models.Post.query.count(), userCount=models.User.query.count(), posts=posts)
 
 
 @app.route('/edit_post/<int:id>', methods=["POST"])
