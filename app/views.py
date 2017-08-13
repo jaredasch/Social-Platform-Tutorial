@@ -62,10 +62,10 @@ def login():
     if request.method == "GET":
         return render_template("general/login.html", title="Log In", form=form)
     if form.validate_on_submit():
-        if models.User.query.filter_by(email=form.email.data).count() == 0:
+        if models.User.query.filter_by(username=form.username.data).count() == 0:
             flash("Email or Password is incorrect")
         else:
-            user = models.User.query.filter_by(email=form.email.data).one()
+            user = models.User.query.filter_by(username=form.username.data).one()
             if user.check_password(form.password.data):
                 login_user(user)
                 return redirect(request.args.get("next") or url_for("index"))

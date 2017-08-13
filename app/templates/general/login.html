@@ -2,7 +2,7 @@
 {% block content %}
     <form class="auth-form" action="{{ url_for("login") }}" method="POST">
         {{ form.hidden_tag() }}
-        {{ form.email(placeholder="Email") }}
+        {{ form.username(placeholder="Username") }}
         {{ form.password(placeholder="Password") }}
         {{ form.submit(value="Log In") }}
         {% with error = get_flashed_messages() %}
