@@ -78,16 +78,6 @@ def login():
                 flash("Email or Password is incorrect")
     return render_template("general/login.html", title="Log In", form=form)
 
-<<<<<<< HEAD
-=======
-@app.route('/forgot_password', methods=["GET", "POST"])
-def forgot_password():
-    form = ForgotForm()
-    if form.validate_on_submit():
-        send_email("Password Change Requested", "Website Name", [form.email.data], "WebDevBlog@gmail.com", render_template("email/password_change.html", link = "https://www.yahoo.com" ))
-        return redirect(request.args.get("next") or url_for("index"))
-    return render_template("general/forgot_password.html", title="Forgot Password", form=form)
->>>>>>> f4e728140651291156f88ce05467a325b9ce84d3
 
 @app.route('/profile/<user>')
 def profile(user):
@@ -295,6 +285,7 @@ def change_password(id):
         db.session.add(user, user_request)
         db.session.commit()
     return render_template("general/change_password.html", id=id, form=form)
+
 
 def clear_old_password_requests():
     requests_to_delete = models.Requests.query.filter_by(date >= datetime.datetime.utcnow() + datetime.timedelta(minutes=15))
