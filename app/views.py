@@ -78,13 +78,6 @@ def login():
                 flash("Email or Password is incorrect")
     return render_template("general/login.html", title="Log In", form=form)
 
-@app.route('/forgot_password', methods=["GET", "POST"])
-def forgot_password():
-    form = ForgotForm()
-    if form.validate_on_submit():
-        send_email("Your account was created successfully", "Website Name", [form.email.data], "WebDevBlog@gmail.com", render_template("email/account_created.html"))
-        return redirect(request.args.get("next") or url_for("index"))
-    return render_template("general/forgot_password.html", title="Forgot Password", form=form)
 
 @app.route('/profile/<user>')
 def profile(user):
@@ -263,3 +256,39 @@ def remove_admin(id):
         else:
             flash("You Can't Remove this Admin", "admin-error")
     return redirect(request.referrer)
+
+
+@app.route('/forgot_password', methods=["GET", "POST"])
+def forgot_password():
+    form = ForgotForm()
+    if form.validate_on_submit():
+        if models.User.query.filter_by(email=form.email.data).count() == 1:
+            user = models.User.query.filter_by(email=form.email.data).one()
+        else:
+            return render_template("general/forgot_password.html", title="Forgot Password", form=form)
+        user_request = models.Request(user=user, date = datetime.datetime.utcnow())
+        db.session.add(user_request)
+        db.session.commit()
+        send_email("Password Recovery", "Website Name", [form.email.data], "WebDevBlog@gmail.com", render_template("email/password_change.html", id=user_request.id))
+        return redirect(request.args.get("next") or url_for("login"))
+    return render_template("general/forgot_password.html", title="Forgot Password", form=form)
+
+
+@app.route('/change_password/<id>', methods=["GET", "POST"])
+def change_password(id):
+    form = UpdatePasswordForm()
+    if form.validate_on_submit():
+        user_request = models.Request.query.filter_by(id=id).one()
+        user = user_request.user
+        user.set_password(form.new_password.data)
+        models.Request.query.filter_by(id=id).delete()
+        db.session.add(user, user_request)
+        db.session.commit()
+    return render_template("general/change_password.html", id=id, form=form)
+
+def clear_old_password_requests():
+    requests_to_delete = models.Requests.query.filter_by(date >= datetime.datetime.utcnow() + datetime.timedelta(minutes=15))
+    requests_to_delete.delete()
+    db.session.add(requests_to_delete)
+    db.session.commit()
+    threading.Timer(10, foo).clear_old_password_requests()

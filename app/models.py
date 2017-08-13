@@ -2,14 +2,21 @@ from app import app, db
 from flask import render_template
 from flask_bcrypt import bcrypt
 from .emails import send_email
-
+from random import choice
 import sys
+import string
+
 
 if sys.version_info >= (3, 0):
     enable_search = False
 else:
     enable_search = True
     import flask_whooshalchemy as whooshalchemy
+
+
+def id_gen():
+    return ''.join(choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(32))
+
 
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
@@ -29,6 +36,7 @@ class User(db.Model):
     password = db.Column(db.String(128), index=False, unique=False)
     is_admin = db.Column(db.Boolean)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    requests = db.relationship('Request', backref='user', lazy='dynamic')
     followed = db.relationship('User',
                                secondary=followers,
                                primaryjoin=(followers.c.follower_id == id),
@@ -92,6 +100,15 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post %r>' % (self.text)
+
+
+class Request(db.Model):
+    id = db.Column(db.String, primary_key=True, default = id_gen)
+    date = db.Column(db.DateTime)
+    userID = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<Request %s by %s>' % (self.id, self.requester.username)
 
 
 whooshalchemy.whoosh_index(app, User)
