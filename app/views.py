@@ -2,7 +2,7 @@ from app import app, models, db, lm
 from flask import render_template, flash, redirect, session, request, url_for, send_file
 from flask_login import login_user, login_required, logout_user, current_user, login_required
 from flask_security import url_for_security
-from .forms import SignupForm, LoginForm, PostForm, UpdatePasswordForm
+from .forms import SignupForm, LoginForm, PostForm, UpdatePasswordForm, ForgotForm
 from config import ADMINS
 from .emails import send_email
 import datetime
@@ -73,6 +73,14 @@ def login():
                 flash("Email or Password is incorrect")
     return render_template("general/login.html", title="Log In", form=form)
 
+@app.route('/forgotpassword', methods=["GET", "POST"])
+def forgotpassword():
+    form = ForgotForm()
+    if form.validate_on_submit():
+        send_email("Your account was created successfully", "Website Name", [form.email.data], "temp.webdev.blog@gmail.com", render_template("email/account_created.html"))
+        return redirect(request.args.get("next") or url_for("index"))
+    if request.method == "GET":
+        return render_template("general/forgotpassword.html", title="Forgot Password", form=form)
 
 @app.route('/profile/<user>')
 def profile(user):
