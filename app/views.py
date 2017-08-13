@@ -78,14 +78,13 @@ def login():
                 flash("Email or Password is incorrect")
     return render_template("general/login.html", title="Log In", form=form)
 
-@app.route('/forgotpassword', methods=["GET", "POST"])
-def forgotpassword():
+@app.route('/forgot_password', methods=["GET", "POST"])
+def forgot_password():
     form = ForgotForm()
     if form.validate_on_submit():
-        send_email("Your account was created successfully", "Website Name", [form.email.data], "temp.webdev.blog@gmail.com", render_template("email/account_created.html"))
+        send_email("Your account was created successfully", "Website Name", [form.email.data], "WebDevBlog@gmail.com", render_template("email/account_created.html"))
         return redirect(request.args.get("next") or url_for("index"))
-    if request.method == "GET":
-        return render_template("general/forgotpassword.html", title="Forgot Password", form=form)
+    return render_template("general/forgot_password.html", title="Forgot Password", form=form)
 
 @app.route('/profile/<user>')
 def profile(user):

@@ -4,7 +4,7 @@
         {{ form.hidden_tag() }}
         {{ form.username(placeholder="Username") }}
         {{ form.password(placeholder="Password") }}
-        <a href = {{ url_for("forgotpassword") }}> Forgot Password </a>
+        <a href = {{ url_for("forgot_password") }}> Forgot Password </a>
         {{ form.submit(value="Log In") }}
         {% with error = get_flashed_messages() %}
             <p class="error">{{ error[0] }}</p>
