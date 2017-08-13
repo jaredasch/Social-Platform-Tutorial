@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+    <form class="auth-form" action="{{ url_for("change_username", id=id) }}" method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.username(placeholder="New Username") }}
+        {{ form.submit(value="Reset Username") }}
+        {% with error = get_flashed_messages() %}
+            <p class="error">{{ error[0] }}</p>
+        {% endwith %}
+        {% for error in form.username.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </form>
+{% endblock %}

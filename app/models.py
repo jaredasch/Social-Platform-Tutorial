@@ -36,7 +36,7 @@ class User(db.Model):
     password = db.Column(db.String(128), index=False, unique=False)
     is_admin = db.Column(db.Boolean)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-    requests = db.relationship('Request', backref='user', lazy='dynamic')
+    requests = db.relationship('ResetRequest', backref='user', lazy='dynamic')
     followed = db.relationship('User',
                                secondary=followers,
                                primaryjoin=(followers.c.follower_id == id),
@@ -102,13 +102,13 @@ class Post(db.Model):
         return '<Post %r>' % (self.text)
 
 
-class Request(db.Model):
+class ResetRequest(db.Model):
     id = db.Column(db.String, primary_key=True, default = id_gen)
     date = db.Column(db.DateTime)
     userID = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return '<Request %s by %s>' % (self.id, self.requester.username)
+        return '<ResetRequest %s by %s>' % (self.id, self.user.username)
 
 
 whooshalchemy.whoosh_index(app, User)

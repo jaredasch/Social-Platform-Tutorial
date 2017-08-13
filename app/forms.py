@@ -25,6 +25,7 @@ class PostForm(Form):
     body = TextAreaField('Post', validators=[DataRequired()])
     submit = SubmitField()
 
+
 class ForgotForm(Form):
     email = StringField('Email', validators=[Email()])
     submit = SubmitField()
@@ -33,4 +34,9 @@ class ForgotForm(Form):
 class UpdatePasswordForm(Form):
     new_password = PasswordField("Password", validators=[DataRequired()])
     confirm_password = PasswordField("Password", validators=[DataRequired(), EqualTo('new_password', message="Passwords don't Match")])
+    submit = SubmitField()
+
+
+class UpdateUsernameForm(Form):
+    username = StringField("Username", validators=[DataRequired()])
     submit = SubmitField()
