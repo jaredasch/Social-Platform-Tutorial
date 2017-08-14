@@ -1,7 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-
-    <div class="profile-pic" style="background: url('https://s3.amazonaws.com/FringeBucket/default-user.png') 50% 50% no-repeat;"></div>
+    {% if current_user == user %}
+    <form id = "profile-pic-upload-form" method="POST" action="{{ url_for("upload_profile_pic") }}" enctype = "multipart/form-data">
+        <div class="profile-pic-container">
+            <img src="{{ url_for("get_profile_pic", user_id=user.id) }}" alt="Avatar" class="image">
+            <input name = "picture" type="file" id="profile-pic-input" style="display:None" accept="image/gif, image/jpeg, image/png"/>
+            <script>
+                $("#profile-pic-input").on("change", function () {
+                    $("#profile-pic-upload-form").submit()
+                })
+            </script>
+            <div class="middle">
+                <a onclick="document.getElementById('profile-pic-input').click()">Upload Profile Picture</br><i class="fa fa-2x fa-upload" aria-hidden="true"></i></a>
+            </div>
+        </div>
+    </form>
+    {% else %}
+        <div class="profile-pic" style="background: url('https://s3.amazonaws.com/FringeBucket/default-user.png') 50% 50% no-repeat;"></div>
+    {% endif %}
     {% if current_user == user or current_user.is_admin %}
         <div class="profile-container">
             {% if current_user.is_admin and user != current_user %}
@@ -87,7 +103,7 @@
     {% endif %}
     {% for post in posts %}
         <div class="post">
-            <div class="icon" style="background: url('https://s3.amazonaws.com/FringeBucket/default-user.png') 50% 50% no-repeat;"></div>
+            <div class="icon" style="background: url('{{ url_for("get_profile_pic", user_id=post.author.id) }}') 50% 50% no-repeat;"></div>
             <a href="{{ url_for("profile", user=post.author.username) }}">{{ post.author.nickname }}</a><span class="username">{{ post.author.username }}</span>
             {% if post.author == current_user or current_user.is_admin %}
                 <a class="post-delete" href="{{ url_for("delete_post", id=post.id) }}">&times;</a>

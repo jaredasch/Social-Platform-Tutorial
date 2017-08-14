@@ -454,3 +454,43 @@ form p {
 .forgot-data {
     text-align: center;
 }
+
+.profile-pic-container {
+    position: relative;
+    width: 15%;
+    margin: 30px auto;
+}
+
+.image {
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+
+.middle {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    color: white;
+    text-align: center;
+    width: 90%;
+}
+
+.middle a {
+    color: white;
+}
+
+.profile-pic-container:hover .image {
+    opacity: 0.3;
+}
+
+.profile-pic-container:hover .middle {
+    opacity: 1;
+}

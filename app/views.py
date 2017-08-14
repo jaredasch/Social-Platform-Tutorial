@@ -1,14 +1,18 @@
 from app import app, models, db, lm
-from flask import render_template, flash, redirect, session, request, url_for, send_file
+from flask import render_template, flash, redirect, session, request, url_for, send_file, send_from_directory
 from flask_login import login_user, login_required, logout_user, current_user, login_required
 from .forms import SignupForm, LoginForm, PostForm, UpdatePasswordForm, ForgotForm, UpdateUsernameForm
-from config import ADMINS
+from config import ADMINS, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from .emails import send_email
-import datetime
-import csv
-import threading
+from werkzeug import secure_filename
+import datetime, csv, os
 
 lm.login_view = "login"
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 @lm.user_loader
@@ -63,6 +67,8 @@ def signup():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
     form = LoginForm()
     if request.method == "GET":
         return render_template("general/login.html", title="Log In", form=form)
@@ -268,7 +274,7 @@ def forgot_password():
             return render_template("general/forgot_password.html", title="Forgot Password", form=form)
         user_request = models.ResetRequest(user=user, date = datetime.datetime.utcnow())
         db.session.add(user_request)
-        requests_to_delete = db.session.query(models.ResetRequest).filter(models.ResetRequest.date >= datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).all()
+        requests_to_delete = db.session.query(models.ResetRequest).filter(models.ResetRequest.date >= datetime.datetime.utcnow() + datetime.timedelta(minutes=10)).all()
         for req in requests_to_delete:
             db.session.delete(req)
         db.session.commit()
@@ -287,7 +293,7 @@ def change_password(id):
         models.ResetRequest.query.filter_by(id=id).delete()
         db.session.add(user, user_request)
         db.session.commit()
-        return render_template("general/login.html", id=id, form=form)
+        return render_template("general/login.html", id=id, form=LoginForm())
     return render_template("general/change_password.html", id=id, form=form)
 
 
@@ -298,16 +304,16 @@ def forgot_username():
         if models.User.query.filter_by(email=form.email.data).count() == 1:
             user = models.User.query.filter_by(email=form.email.data).one()
         else:
-            return render_template("general/forgot_password.html", title="Forgot Password", form=form)
+            return render_template("general/forgot_username.html", title="Forgot Username", form=form)
         user_request = models.ResetRequest(user=user, date = datetime.datetime.utcnow())
         db.session.add(user_request)
-        requests_to_delete = db.session.query(models.ResetRequest).filter(models.ResetRequest.date >= datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).all()
+        requests_to_delete = db.session.query(models.ResetRequest).filter(models.ResetRequest.date >= datetime.datetime.utcnow() + datetime.timedelta(minutes=10)).all()
         for req in requests_to_delete:
             db.session.delete(req)
         db.session.commit()
         send_email("Username Recovery", "Website Name", [form.email.data], "WebDevBlog@gmail.com", render_template("email/username_change.html", id=user_request.id))
         return redirect(request.args.get("next") or url_for("login"))
-    return render_template("general/forgot_username.html", title="Forgot Password", form=form)
+    return render_template("general/forgot_username.html", title="Forgot Username", form=form)
 
 
 @app.route('/change_username/<id>', methods=["GET", "POST"])
@@ -319,13 +325,35 @@ def change_username(id):
         else:
             return render_template("general/no_request.html")
         user = user_request.user
-        user.username = form.username.data
-        if models.User.query.filter_by(username=form.username.data).count() != 1:
+        if models.User.query.filter_by(username=form.username.data).count() == 1:
             flash("This username is already in use")
             return render_template("general/change_username.html", id=id, form=form)
         else:
+            user.username = form.username.data
             models.ResetRequest.query.filter_by(id=id).delete()
             db.session.add(user, user_request)
             db.session.commit()
         return render_template("general/login.html", id=id, form=LoginForm())
     return render_template("general/change_username.html", id=id, form=form)
+
+
+@app.route('/upload_profile_pic', methods=["POST"])
+@login_required
+def upload_profile_pic():
+    file = request.files['picture']
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(UPLOAD_FOLDER, filename))
+        old_filename = current_user.profile_image
+        if old_filename != "default.png":
+            os.remove(os.path.join(UPLOAD_FOLDER, old_filename))
+        current_user.profile_image = filename
+        db.session.add(current_user)
+        db.session.commit()
+    return redirect(request.referrer)
+
+
+@app.route('/profile_picture/<int:user_id>', methods=["GET"])
+def get_profile_pic(user_id):
+    filename = models.User.query.filter_by(id=user_id).one().profile_image
+    return send_from_directory('data/uploads/', filename)

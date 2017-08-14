@@ -15,7 +15,11 @@ WHOOSH_BASE = os.path.join(basedir, 'search.db')
 
 SECURITY_RECOVERABLE = True
 
-MAX_SEARCH_RESULTS = 10
+MAX_SEARCH_RESULTS = 50
+
+UPLOAD_FOLDER = 'app/data/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpeg', 'jpg'}
+
 
 WTF_CSRF_ENABLED = True
 SECRET_KEY = 'webdev-blog'

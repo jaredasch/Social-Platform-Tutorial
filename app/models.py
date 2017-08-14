@@ -6,7 +6,6 @@ from random import choice
 import sys
 import string
 
-
 if sys.version_info >= (3, 0):
     enable_search = False
 else:
@@ -34,6 +33,7 @@ class User(db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     nickname = db.Column(db.String(64), index=False, unique=False)
     password = db.Column(db.String(128), index=False, unique=False)
+    profile_image = db.Column(db.String(64), index=False, unique=False, default="default.png")
     is_admin = db.Column(db.Boolean)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     requests = db.relationship('ResetRequest', backref='user', lazy='dynamic')
@@ -103,7 +103,7 @@ class Post(db.Model):
 
 
 class ResetRequest(db.Model):
-    id = db.Column(db.String, primary_key=True, default = id_gen)
+    id = db.Column(db.String, primary_key=True, default=id_gen)
     date = db.Column(db.DateTime)
     userID = db.Column(db.Integer, db.ForeignKey('user.id'))
 

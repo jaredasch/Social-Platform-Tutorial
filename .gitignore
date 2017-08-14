@@ -3,5 +3,6 @@
 *.db
 .idea/
 db_repository
+app/data/
 search.db
 .DS_Store
