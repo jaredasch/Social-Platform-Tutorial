@@ -101,43 +101,6 @@
             </div>
         </div>
     {% endif %}
-    {% for post in posts %}
-        <div class="post">
-            <div class="icon" style="background: url('{{ url_for("get_profile_pic", user_id=post.author.id) }}') 50% 50% no-repeat;"></div>
-            <a href="{{ url_for("profile", user=post.author.username) }}">{{ post.author.nickname }}</a><span class="username">{{ post.author.username }}</span>
-            {% if post.author == current_user or current_user.is_admin %}
-                <a class="post-delete" href="{{ url_for("delete_post", id=post.id) }}">&times;</a>
-                <a class="post-edit">
-                    <i class="fa fa-pencil" aria-hidden="true"></i>
-                </a>
-            {% endif %}
-            <div class="post-no-edit-div">
-                <div class="post-body">
-                    <p class="post-content">{{ post.body }}</p>
-                </div>
-                <p class="post-date">{{ momentjs(post.date).format("LLL") }}</p>
-            </div>
-            <div class="post-edit-div">
-                <form class="update-form" action="{{ url_for("edit_post", id = post.id) }}" method="POST">
-                    {{ edit_form.hidden_tag() }}
-                    {{ edit_form.body(class="update-textarea") }}
-                    <script type="text/javascript">
-                        $('.update-textarea').last().html("{{ post.body }}");
-                    </script>
-                    <p class="post-date">{{ momentjs(post.date).format("LLL") }}</p>
-                    {{ edit_form.submit(value="Update Post") }}
-                </form>
-            </div>
-        </div>
-    {% endfor %}
-    <script type="text/javascript">
-        $('.post-edit-div').hide();
-        $('.post-edit').on("click", function (e) {
-            e.preventDefault();
-            $(this).parent().children('.post-edit-div').toggle();
-            $(this).parent().children('.post-no-edit-div').toggle();
-        });
-    </script>
 {% endblock %}
 
 

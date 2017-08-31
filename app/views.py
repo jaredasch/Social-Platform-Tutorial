@@ -95,6 +95,15 @@ def profile(user):
     posts = models.Post.query.filter_by(author=user).order_by("date desc")
     return render_template("user/profile.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), edit_form=edit_form, password_form=change_password_form)
 
+@app.route('/posts/<user>')
+@login_required
+def posts(user):
+    if models.User.query.filter_by(username=user).count() == 0:
+        return render_template('user/user_not_found.html')
+    edit_form = PostForm()
+    user = models.User.query.filter_by(username=user).one()
+    posts = models.Post.query.filter_by(author=user).order_by("date desc")
+    return render_template("user/posts.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), edit_form=edit_form)
 
 @app.route('/post', methods=['POST'])
 @login_required
