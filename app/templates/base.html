@@ -37,7 +37,7 @@
                         <form action="{{ url_for("user_search") }}"><input id="search-bar" type="text" placeholder="Search" name="tag"></form>
                     </li>
                     <li><a href="{{ url_for("users") }}">People</a></li>
-                    <li><a href="{{ url_for("posts", user=current_user.username) }}">Posts</a></li>
+                    <li><a href="{{ url_for("posts", user=current_user.username, page = 1) }}">Posts</a></li>
                     {% if current_user.is_admin %}
                         <li><a href="{{ url_for("admin_controls") }}">Admin Panel</a></li>
                     {% endif %}

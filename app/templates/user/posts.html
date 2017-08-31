@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for post in posts %}
+    {% for post in posts.items %}
         <div class="post">
             <div class="icon" style="background: url('{{ url_for("get_profile_pic", user_id=post.author.id) }}') 50% 50% no-repeat;"></div>
             <a href="{{ url_for("profile", user=post.author.username) }}">{{ post.author.nickname }}</a><span class="username">{{ post.author.username }}</span>
@@ -29,7 +29,14 @@
             </div>
         </div>
     {% endfor %}
-    
+        {% if posts.has_prev %}
+            <div class="viewposts-button"> <a href="{{ url_for("posts", user=current_user.username, page = posts.prev_num) }}"> Previous Posts </a> </div> 
+        {% endif %}
+
+        {% if posts.has_next %}
+            <div class="viewposts-button" style="float: right;"> <a href="{{ url_for("posts", user=current_user.username, page = posts.next_num) }}"> Next Posts </a> </div>
+        {% endif %}
+
     <script type="text/javascript">
         $('.post-edit-div').hide();
         $('.post-edit').on("click", function (e) {

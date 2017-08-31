@@ -23,3 +23,5 @@ ALLOWED_EXTENSIONS = {'png', 'jpeg', 'jpg'}
 
 WTF_CSRF_ENABLED = True
 SECRET_KEY = 'webdev-blog'
+
+POSTS_PER_PAGE = 2

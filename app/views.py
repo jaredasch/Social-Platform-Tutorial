@@ -2,7 +2,7 @@ from app import app, models, db, lm
 from flask import render_template, flash, redirect, session, request, url_for, send_file, send_from_directory
 from flask_login import login_user, login_required, logout_user, current_user, login_required
 from .forms import SignupForm, LoginForm, PostForm, UpdatePasswordForm, ForgotForm, UpdateUsernameForm
-from config import ADMINS, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
+from config import ADMINS, ALLOWED_EXTENSIONS, UPLOAD_FOLDER, POSTS_PER_PAGE
 from .emails import send_email
 from werkzeug import secure_filename
 import datetime, csv, os
@@ -95,14 +95,14 @@ def profile(user):
     posts = models.Post.query.filter_by(author=user).order_by("date desc")
     return render_template("user/profile.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), edit_form=edit_form, password_form=change_password_form)
 
-@app.route('/posts/<user>')
+@app.route('/posts/<user>/<int:page>')
 @login_required
-def posts(user):
+def posts(user, page = 1):
     if models.User.query.filter_by(username=user).count() == 0:
         return render_template('user/user_not_found.html')
     edit_form = PostForm()
     user = models.User.query.filter_by(username=user).one()
-    posts = models.Post.query.filter_by(author=user).order_by("date desc")
+    posts = user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
     return render_template("user/posts.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), edit_form=edit_form)
 
 @app.route('/post', methods=['POST'])
