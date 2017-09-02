@@ -285,19 +285,28 @@ form p {
     cursor: pointer;
 }
 
-.viewposts-button {
+.pagination-button {
     padding: 8px;
-    margin: 10px auto 10px auto;
     background-color: white;
-    border: 1px solid white;
     color: #14355f;
     -webkit-transition: all .35s;
     -moz-transition: all .35s;
     transition: all .35s;
     font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     text-align: center;
-    border-radius: 5px;
     display: inline-block;
+    position: static;
+    margin-bottom: 30px;
+}
+
+.pagination-left {
+    margin-left: 30px;
+    float: left;
+}
+
+.pagination-right {
+    margin-right: 30px;
+    float: right;
 }
 
 .follow-button {
@@ -508,4 +517,19 @@ form p {
 
 .profile-pic-container:hover .middle {
     opacity: 1;
+}
+
+.password-hide {
+    position: sticky;
+    right: 10px;
+    z-index: 10;
+    height: 0;
+    float: right;
+    margin-top: -10px;
+    font-size: 1.5em !important;
+}
+
+.password-toggle {
+    text-align: center;
+    display: block;
 }

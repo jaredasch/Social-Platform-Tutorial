@@ -1,3 +1,3 @@
-username,_sa_instance_state,name,id,lname,is_admin,fname,password,nickname,email
-jsmith,<sqlalchemy.orm.state.InstanceState object at 0x104a4d6d0>,Jared Asch,2,Asch,True,Jared,$2b$10$vr2JOEq3IJtQLMCwG3o6u.pRr6cKnLH9g.tTVrHM/QQBdJAAKYNZG,James Smith,jsmith@gmail.com
-jasch,<sqlalchemy.orm.state.InstanceState object at 0x104a4db90>,Jared Asch,3,Asch,True,Jared,$2b$10$lGStEPJQU8MJd/ZNrqMO9.RU.Ex4Fff8aYWAyfyeIHr7.OVwyhtO6,Jared Asch,jasch@stuy.edu
+username,_sa_instance_state,name,profile_image,id,lname,is_admin,fname,password,nickname,email
+jsmith,<sqlalchemy.orm.state.InstanceState object at 0x10461b0d0>,Jared Asch,default.png,2,Asch,True,Jared,$2b$10$vr2JOEq3IJtQLMCwG3o6u.pRr6cKnLH9g.tTVrHM/QQBdJAAKYNZG,James Smith,jsmith@gmail.com
+jasch,<sqlalchemy.orm.state.InstanceState object at 0x10461bc90>,Jared Asch,austin-schwab.jpg,3,Asch,True,Jared,$2b$10$cB6zUuKjOKul0kDb46psTO5VG2ECCi4jCw3ee/4cr3ABUX06eSeYu,Jared Asch,jasch@stuy.edu

@@ -7,7 +7,7 @@
             {{ form.submit(value="Post") }}
         </form>
     {% endif %}
-    {% for post in posts %}
+    {% for post in posts.items %}
         <div class="post">
             <div class="icon" style="background: url('{{ url_for("get_profile_pic", user_id=post.author.id) }}') 50% 50% no-repeat;"></div>
             <a href="{{ url_for("profile", user=post.author.username) }}">{{ post.author.nickname }}</a><span class="username">{{ post.author.username }}</span>
@@ -38,6 +38,12 @@
             </div>
         </div>
     {% endfor %}
+    {% if posts.has_prev %}
+        <div class="pagination-button pagination-left"><a href="{{ url_for("index",page = posts.prev_num) }}"> &larr; More Recent Posts </a></div>
+    {% endif %}
+    {% if posts.has_next %}
+        <div class="pagination-button pagination-right"><a href="{{ url_for("index",page = posts.next_num) }}"> Older Posts &rarr;</a></div>
+    {% endif %}
     <script type="text/javascript">
         $('.post-edit-div').hide();
         $('.post-edit').on("click", function (e) {

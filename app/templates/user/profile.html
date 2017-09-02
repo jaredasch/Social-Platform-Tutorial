@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
     {% if current_user == user %}
-    <form id = "profile-pic-upload-form" method="POST" action="{{ url_for("upload_profile_pic") }}" enctype = "multipart/form-data">
-        <div class="profile-pic-container">
-            <img src="{{ url_for("get_profile_pic", user_id=user.id) }}" alt="Avatar" class="image">
-            <input name = "picture" type="file" id="profile-pic-input" style="display:None" accept="image/gif, image/jpeg, image/png"/>
-            <script>
-                $("#profile-pic-input").on("change", function () {
-                    $("#profile-pic-upload-form").submit()
-                })
-            </script>
-            <div class="middle">
-                <a onclick="document.getElementById('profile-pic-input').click()">Upload Profile Picture</br><i class="fa fa-2x fa-upload" aria-hidden="true"></i></a>
+        <form id="profile-pic-upload-form" method="POST" action="{{ url_for("upload_profile_pic") }}" enctype="multipart/form-data">
+            <div class="profile-pic-container">
+                <img src="{{ url_for("get_profile_pic", user_id=user.id) }}" alt="Avatar" class="image">
+                <input name="picture" type="file" id="profile-pic-input" style="display:None" accept="image/gif, image/jpeg, image/png"/>
+                <script>
+                    $("#profile-pic-input").on("change", function () {
+                        $("#profile-pic-upload-form").submit()
+                    })
+                </script>
+                <div class="middle">
+                    <a onclick="document.getElementById('profile-pic-input').click()">Upload Profile Picture</br><i class="fa fa-2x fa-upload" aria-hidden="true"></i></a>
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
     {% else %}
         <div class="profile-pic" style="background: url('https://s3.amazonaws.com/FringeBucket/default-user.png') 50% 50% no-repeat;"></div>
     {% endif %}
@@ -50,16 +50,18 @@
                 <div class="profile-label col-lg-6 col-md-6 col-sm-6 col-xs-6">Nickname</div>
                 <div class="profile-value col-lg-6 col-md-6 col-sm-6 col-xs-6profile-value">{{ user.nickname }}</div>
             </div>
+            <a onclick="$('.auth-form').show()" class = "password-toggle">Change Your Password</a>
             <a class="delete-account" href="{{ url_for("delete_user", id=user.id) }}">Delete Account</a>
             {% with error = get_flashed_messages(category_filter=["delete-error"])[0] %}
                 <p class="error">{{ error }}</p>
             {% endwith %}
         </div>
-        <form class="auth-form" method="POST" action="{{ url_for("update_password") }}">
+        <form hidden class="auth-form" method="POST" action="{{ url_for("update_password") }}">
+            <p onclick="$(this).parent().hide()" class="password-hide">&times;</p>
             {{ password_form.hidden_tag() }}
             {{ password_form.new_password(placeholder="Enter New Password") }}
             {{ password_form.confirm_password(placeholder="Confirm New Password") }}
-            {{ password_form.submit() }}
+            {{ password_form.submit(value="Reset Password") }}
             {% with errors = get_flashed_messages() %}
                 {% for error in errors %}
                     <p class="error">{{ error[0] }}</p>
@@ -101,7 +103,7 @@
             </div>
         </div>
     {% endif %}
-    {% for post in posts %}
+    {% for post in posts.items %}
         <div class="post">
             <div class="icon" style="background: url('{{ url_for("get_profile_pic", user_id=post.author.id) }}') 50% 50% no-repeat;"></div>
             <a href="{{ url_for("profile", user=post.author.username) }}">{{ post.author.nickname }}</a><span class="username">{{ post.author.username }}</span>
@@ -130,6 +132,14 @@
             </div>
         </div>
     {% endfor %}
+
+    {% if posts.has_prev %}
+        <div class="pagination-button pagination-left"><a href="{{ url_for("profile",page = posts.prev_num, user=user.username) }}"> &larr; More Recent Posts </a></div>
+    {% endif %}
+    {% if posts.has_next %}
+        <div class="pagination-button pagination-right"><a href="{{ url_for("profile",page = posts.next_num, user=user.username) }}"> Older Posts &rarr;</a></div>
+    {% endif %}
+
     <script type="text/javascript">
         $('.post-edit-div').hide();
         $('.post-edit').on("click", function (e) {
