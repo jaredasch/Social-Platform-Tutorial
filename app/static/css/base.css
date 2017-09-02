@@ -189,7 +189,8 @@ form p {
     margin: 20px auto auto auto;
     width: 50%;
     background-color: white;
-    padding: 20px;
+    padding: 10px;
+    display: block;
 }
 
 .profile-container .profile-row div {
@@ -462,7 +463,7 @@ form p {
     display: block;
     text-align: center;
     font-size: 14px;
-    margin: 20px auto auto auto;
+    margin: 10px auto auto auto;
 }
 
 .admin-remove, .admin-add {
@@ -529,7 +530,27 @@ form p {
     font-size: 1.5em !important;
 }
 
-.password-toggle {
+.profile-toggle {
     text-align: center;
+    display: inline-block;
+    width: 49.6%;
+    margin-top: 10px;
+}
+
+.profile-label.col-lg-6.col-md-6.col-sm-6.col-xs-6 {
+    margin-top: 10px;
+}
+
+.profile-container input[type='text'] {
+    margin: auto !important;
+}
+
+.edit-profile .profile-row {
+    margin: 3px 10px 3px 10px;
+}
+
+.edit-profile input[type='submit'] {
+    margin-top: 20px;
     display: block;
+    width: 70%;
 }

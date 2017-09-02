@@ -103,7 +103,7 @@ def profile(user):
     change_password_form = UpdatePasswordForm()
     user = models.User.query.filter_by(username=user).one()
     posts = models.Post.query.filter_by(author=user).order_by("date desc").paginate(page, POSTS_PER_PAGE, False)
-    return render_template("user/profile.html", user=user, posts=posts, title="%s %s" % (user.fname, user.lname), edit_form=edit_form, password_form=change_password_form)
+    return render_template("user/profile.html", user=user, update_form=SignupForm(), posts=posts, title="%s %s" % (user.fname, user.lname), edit_form=edit_form, password_form=change_password_form)
 
 
 @app.route('/post', methods=['POST'])
@@ -173,6 +173,36 @@ def update_password():
     for field in form:
         errors += field.errors
     flash(errors)
+    return redirect(request.referrer)
+
+
+@app.route('/update_user', methods=['POST'])
+def update_user():
+    user = models.User.query.filter_by(username=request.args.get('user')).one()
+    errors = []
+    form = SignupForm()
+    form.password.data = "Need_to_validate"
+    form.confirm_password.data = "Need_to_validate"
+    if form.validate_on_submit():
+        if models.User.query.filter_by(username=form.username.data).count() == 1:
+            if models.User.query.filter_by(username=form.username.data).one() != current_user:
+                errors += ["This username is already in use"]
+        if models.User.query.filter_by(email=form.email.data).count() == 1:
+            if models.User.query.filter_by(email=form.email.data).one() != current_user:
+                errors += ["This email is already in use"]
+        user.email = form.email.data
+        user.username = form.username.data
+        user.nickname = form.nickname.data
+        user.fname = form.fname.data
+        user.lname = form.lname.data
+        user.name = "%s %s" % (form.fname.data, form.lname.data)
+        db.session.add(user)
+        db.session.commit()
+        redirect(url_for('profile', user=form.username.data))
+    for field in form:
+        errors += field.errors
+    print "Errors: ", errors
+    flash(errors, 'user-errors')
     return redirect(request.referrer)
 
 
