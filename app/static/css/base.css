@@ -419,7 +419,7 @@ form p {
 
 .update-form input[type="submit"]:hover {
     background-color: #fff;
-    color: #14355f
+    color: #14355f;
 }
 
 .admin-container {

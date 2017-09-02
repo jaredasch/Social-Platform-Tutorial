@@ -132,6 +132,8 @@ def follow(username):
 @app.route('/unfollow/<username>', methods=["GET"])
 @login_required
 def unfollow(username):
+    if current_user.username == username:
+        return redirect(request.referrer)
     user_to_follow = models.User.query.filter_by(username=username).one()
     user = models.User.query.filter_by(username=current_user.username).one().unfollow(user_to_follow)
     db.session.add(user)
@@ -198,7 +200,7 @@ def update_user():
         user.name = "%s %s" % (form.fname.data, form.lname.data)
         db.session.add(user)
         db.session.commit()
-        redirect(url_for('profile', user=form.username.data))
+        return redirect(url_for('profile', user=form.username.data))
     for field in form:
         errors += field.errors
     print "Errors: ", errors
@@ -208,7 +210,10 @@ def update_user():
 
 @app.route('/users', methods=["GET"])
 def users():
-    users = [current_user] + models.User.query.filter(models.User.id != current_user.id).all()
+    if current_user.is_authenticated:
+        users = [current_user] + models.User.query.filter(models.User.id != current_user.id).all()
+    else:
+        users = models.User.query.all()
     return render_template("user/users.html", title="All Users", users=users)
 
 

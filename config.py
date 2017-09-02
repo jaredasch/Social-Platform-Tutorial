@@ -5,7 +5,7 @@ MAIL_SERVER = 'smtp.googlemail.com'
 MAIL_PORT = 465
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
-MAIL_USERNAME = "temp.webdev.blog@gmail.com"
+MAIL_USERNAME = "falcon.arista@gmail.com"
 MAIL_PASSWORD = "arista1718"
 ADMINS = ["jasch@stuy.edu", "izhang1@stuy.edu"]
 
@@ -25,3 +25,4 @@ WTF_CSRF_ENABLED = True
 SECRET_KEY = 'webdev-blog'
 
 POSTS_PER_PAGE = 10
+DOMAIN = "localhost:5000"
