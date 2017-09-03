@@ -53,7 +53,7 @@ class User(db.Model):
     def follow(self, user):
         if not self.is_following(user):
             if self != user:
-                send_email("%s is now following you!" % user.name, "Website Name", [user.email], "WebDevBlog@gmail.com", render_template("email/followed_by.html", user_following=user))
+                send_email("%s is now following you!" % self.name, "Website Name", [user.email], "WebDevBlog@gmail.com", render_template("email/followed_by.html", user_following=user))
                 send_email("You are now following %s" % user.name, "Website Name", [self.email], "WebDevBlog@gmail.com", render_template("email/following.html", user_following=user))
             self.followed.append(user)
             print self.email, user.email
