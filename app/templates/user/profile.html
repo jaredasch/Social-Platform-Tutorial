@@ -14,8 +14,10 @@
             {% with error = get_flashed_messages(category_filter=["admin-error"])[0] %}
                 <p class="error">{{ error }}</p>
             {% endwith %}
-            {% with error = get_flashed_messages(category_filter=["password-errors"])[0] %}
-                    <p class="error">{{ error }}</p>
+            {% with errors = get_flashed_messages(category_filter=["password-errors"]) %}
+                {% for error in errors %}
+                    <p class="error">{{ error[0] }}</p>
+                {% endfor %}
             {% endwith %}
             <div class="no-edit-profile">
                 <div class="profile-row row">
