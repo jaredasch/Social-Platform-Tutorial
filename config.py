@@ -25,4 +25,3 @@ WTF_CSRF_ENABLED = True
 SECRET_KEY = 'webdev-blog'
 
 POSTS_PER_PAGE = 10
-DOMAIN = "localhost:5000"

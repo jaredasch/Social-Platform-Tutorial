@@ -209,6 +209,7 @@ def update_user():
 
 
 @app.route('/users', methods=["GET"])
+@login_required
 def users():
     if current_user.is_authenticated:
         users = [current_user] + models.User.query.filter(models.User.id != current_user.id).all()
