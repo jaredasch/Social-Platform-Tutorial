@@ -3,7 +3,7 @@
 *.db
 .idea/
 db_repository
-app/data/
+app/data/*
 search.db
 !app/data/uploads/default.png
 .DS_Store

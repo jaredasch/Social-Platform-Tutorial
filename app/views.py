@@ -174,7 +174,7 @@ def update_password():
     errors = []
     for field in form:
         errors += field.errors
-    flash(errors)
+    flash(errors, 'password-errors')
     return redirect(request.referrer)
 
 
