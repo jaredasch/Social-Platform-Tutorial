@@ -5,4 +5,5 @@
 db_repository
 app/data/
 search.db
+!app/data/uploads/default.png
 .DS_Store
